@@ -194,7 +194,7 @@ const App = () => {
                     <div>
                       {" "}
                       <Input
-                        type="text"
+                        type="date"
                         {...register("dob", { required: "This field is required" })}
                         placeholder="dd/mm/yyyy"
                       />
@@ -253,8 +253,9 @@ const App = () => {
                     <Button
                       type="button"
                       onClick={() => onChange([...value, ""])}
+                      style={{ position:'relative', top:'-53px',left:'85px'}}
                     >
-                      Add Tech Stack
+                      +
                     </Button>
                   </>
                 )}
