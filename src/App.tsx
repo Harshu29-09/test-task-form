@@ -163,7 +163,7 @@ const App = () => {
                       <FormLabel>Gender:</FormLabel>
                     </div>
                     <div>
-                      <Select
+                      <select
                         {...register("gender", {
                           required: "This field is required",
                         })}
@@ -172,7 +172,7 @@ const App = () => {
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                         <option value="other">Other</option>
-                      </Select>
+                      </select>
                     </div>
                     <div>
                       <FormErrorMessage>
