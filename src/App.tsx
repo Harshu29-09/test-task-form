@@ -1,224 +1,109 @@
-import React from "react";
-import { useState } from "react";
-import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
+import React from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import {
+  Box,
+  Button,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
-  Button,
+  Select,
   Heading,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
+import { FieldError } from 'react-hook-form';
 
-import { Select } from "chakra-react-select";
-import { ColorOption, colorOptions } from "./ExampleSelect";
+const App = () => {
+  const { register, control, handleSubmit, formState: { errors } } = useForm();
 
-interface OtherInformation {
-  firstName: string;
-  lastName: string;
-  gender: string;
-  dateOfBirth: string;
-  techStack: { id: string; value: string }[];
-}
-
-const App: React.FC = () => {
-  const [form, setForm] = useState({
-    firstName: '',
-    lastName: '',
-    gender: '',
-    dateOfBirth:'',
-    techStack: [''],
-  });
-
-  const {
-    control,
-    handleSubmit,
-    register,
-    setValue,
-    formState: { errors },
-  } = useForm<OtherInformation>();
-
-  const [selectedColors, setSelectedColors] = useState<readonly ColorOption[]>(
-    []
-  );
-
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "techStack",
-  });
-
-  const handleTechStackChange = (index: number, value: string) => {
-    setValue(`techStack.${index}.value`, value);
+  const onSubmit = (data:any) => {
+    console.log(data);
   };
-
-  const onSubmit: SubmitHandler<OtherInformation> = (
-    data: OtherInformation
-  ) => {
-    console.log(data); // Log the form data first
-    console.log("harsh");
-    
-  };
-
-  const changeHandler =
 
   return (
-    <>
+    <Box maxWidth="500px" mx="auto" mt="50px">
       <Heading fontSize="xx-large" fontWeight="500" textAlign="center">
         User Details
       </Heading>
-      <FormControl
-        width="50%"
-        marginLeft="30%"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <div style={{ backgroundColor: "darkgray" }}>
-          <div style={{ marginLeft: "20px" }}>
-            <Heading fontSize="x-large" fontWeight={400} mt={5}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <FormControl isInvalid={!!errors.firstName} width="50%"
+   marginLeft="30%">
+     <div style={{ backgroundColor: "darkgray" }}></div>
+     <div style={{ marginLeft: "20px" }}></div>
+     <Heading fontSize="x-large" fontWeight={400} mt={5}>
               Basic Details
             </Heading>
-            <div style={{ display: "flex", marginTop: "15px" }}>
-              <div>
-                <FormLabel>First name</FormLabel>
-                <Input
-                  style={{ borderColor: "gray", boxShadow: "none" }}
-                  m={0}
-                  marginRight={5}
-                  width="80%"
-                  onChange={changeHandler}
-                  placeholder="First name"
-                  {...register("firstName", {
-                    required: "Required",
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Invalid email address",
-                    },
-                  })}
-                />
-                {errors.firstName && <span>{errors.firstName.message}</span>}
-              </div>
-              <div>
-                <FormLabel>Last Name:</FormLabel>
-                <Input
-                  {...register("lastName", {
-                    required: "Last name is required.",
-                  })}
-                  style={{ borderColor: "gray", boxShadow: "none" }}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div style={{ marginLeft: "20px" }}>
-            <Heading
-              fontSize="x-large"
-              fontWeight="400"
-              marginBottom={5}
-              marginTop={5}
-            >
-              Other Information
-            </Heading>
-
-            <div style={{ display: "flex" }}>
-              <div style={{ width: "40%", marginRight: "40px" }}>
-                <FormLabel>Gender</FormLabel>
-                <Select
-                  isMulti
-                  options={colorOptions}
-                  placeholder="Select some colors..."
-                  closeMenuOnSelect={false}
-                  value={selectedColors}
-                  onChange={(selectedOptions) =>
-                    setSelectedColors(selectedOptions)
-                  }
-                />
-              </div>
-              <div style={{ width: "38%" }}>
-                <FormLabel>Date of Birth:</FormLabel>
-                <Input
-                  style={{ borderColor: "gray", boxShadow: "none" }}
-                  type="date"
-                  {...register("dateOfBirth", {
-                    required: "Date of birth is required.",
-                  })}
-                />
-              </div>
-            </div>
-
-            <div style={{ display: "flex", marginTop: 10 }}>
-              <div style={{ width: "37%", marginTop: "25px" }}>
-                <FormLabel>Tech Stack:</FormLabel>
-              </div>
-              <div>
-                <Button
-                  mt={4}
-                  ml={-7}
-                  colorScheme="teal"
-                  type="button"
-                  onClick={() =>
-                    append({ id: Date.now().toString(), value: "" })
-                  }
-                >
-                  +
-                </Button>
-              </div>
-            </div>
-            <div>
-              <Input
-                style={{ borderColor: "gray", boxShadow: "none" }}
-                type="text"
-                width="40%"
-                margin={0}
-                padding={0}
-                marginTop={5}
-              />
-            </div>
-
-            <div>
-              {fields.map((field, index) => (
-                <div
-                  key={field.id}
-                  style={{ display: "flex", marginBottom: 8 }}
-                >
-                  <Input
-                    style={{ borderColor: "gray", boxShadow: "none" }}
-                    type="text"
-                    onChange={(e) =>
-                      handleTechStackChange(index, e.target.value)
-                    }
-                    width="40%"
-                    margin={0}
-                    padding={0}
-                    marginTop={5}
-                  />
-                  {index > 0 && (
-                    <Button
-                      type="button"
-                      onClick={() => remove(index)}
-                      marginLeft={-10}
-                      zIndex={1}
-                      marginTop={5}
-                    >
-                      X
-                    </Button>
-                  )}
-                </div>
-              ))}
-            </div>
-            <div>
-              <Button onClick={()=>{console.log('harsh');
-              }}
-                marginTop={5}
-                marginBottom={6}
-                style={{ marginLeft: "80%" }}
-                colorScheme="teal"
-                type="submit"
-              >
-                Submit
-              </Button>
-            </div>
-          </div>
-        </div>
-      </FormControl>
-    </>
+             <div style={{ display: "flex", marginTop: "15px" }}>
+             </div>
+          <FormLabel>First Name:</FormLabel>
+          <Input type="text" {...register('firstName', { required: 'This field is required' })} />
+          <FormErrorMessage>{errors.firstName && typeof errors.firstName === 'object' && (errors.firstName as FieldError).message}</FormErrorMessage>
+        </FormControl>
+        <FormControl isInvalid={!!errors.lastName} mb="4">
+          <FormLabel>Last Name:</FormLabel>
+          <Input type="text" {...register('lastName', { required: 'This field is required' })} />
+          <FormErrorMessage>{errors.lastName && typeof errors.lastName === 'object' && (errors.lastName as FieldError).message}</FormErrorMessage>
+        </FormControl>
+        <FormControl isInvalid={!!errors.email} mb="4">
+          <FormLabel>Email:</FormLabel>
+          <Input type="email" {...register('email', { required: 'This field is required' })} />
+          <FormErrorMessage>{errors.email && typeof errors.email === 'object' && (errors.email as FieldError).message}</FormErrorMessage>
+        </FormControl>
+        <FormControl isInvalid={!!errors.phone} mb="4">
+          <FormLabel>Phone No.:</FormLabel>
+          <Input type="tel" {...register('phone', { required: 'This field is required' })} />
+          <FormErrorMessage>{errors.phone && typeof errors.phone === 'object' && (errors.phone as FieldError).message}</FormErrorMessage>
+        </FormControl>
+        <FormControl isInvalid={!!errors.gender} mb="4">
+          <FormLabel>Gender:</FormLabel>
+          <Select {...register('gender', { required: 'This field is required' })}>
+            <option value="">Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </Select>
+          <FormErrorMessage>{errors.gender && typeof errors.gender === 'object' && (errors.gender as FieldError).message}</FormErrorMessage>
+        </FormControl>
+        <FormControl isInvalid={!!errors.dob} mb="4">
+          <FormLabel>Date of Birth:</FormLabel>
+          <Input type="text" {...register('dob', { required: 'This field is required' })} placeholder="dd/mm/yyyy" />
+          <FormErrorMessage>{errors.dob && typeof errors.dob === 'object' && (errors.dob as FieldError).message}</FormErrorMessage>
+        </FormControl>
+        <FormControl isInvalid={!!errors.techStacks} mb="4">
+          <FormLabel>Tech Stack:</FormLabel>
+          <Controller
+            name="techStacks"
+            control={control}
+            defaultValue={['']}
+            render={({ field: { onChange, value } }) => (
+              <>
+                {value.map((tech:any, index:any) => (
+                  <div key={index} style={{ marginBottom: '10px' }}>
+                    <Input
+                      type="text"
+                      value={tech}
+                      onChange={(e) => {
+                        const newTechStacks = [...value];
+                        newTechStacks[index] = e.target.value;
+                        onChange(newTechStacks);
+                      }}
+                      placeholder="Enter Tech Stack"
+                    />
+                    {index !== 0 && (
+                      <Button type="button" variant="ghost" onClick={() => onChange(value.filter((_:any, i:any) => i !== index))}>
+                        Remove
+                      </Button>
+                    )}
+                  </div>
+                ))}
+                <Button type="button" onClick={() => onChange([...value, ''])}>Add Tech Stack</Button>
+              </>
+            )}
+          />
+          {errors.techStacks && typeof errors.techStacks === 'object' && (errors.techStacks as FieldError).message}
+        </FormControl>
+        <Button type="submit" mt="4" colorScheme="blue">Submit</Button>
+      </form>
+    </Box>
   );
 };
 
